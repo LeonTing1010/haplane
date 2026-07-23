@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>HapLane — 鸿蒙 HAP 一键签名·调试·部署 CLI</title>
+<meta name="description" content="纯血鸿蒙装 HAP 卡签名墙？HapLane 把华为账号、UDID、配额、证书链、system 权限这些坑折成一条命令，装完自动验签。CLI + MCP，开源可查，不破解、走你自己的账号。">
+<meta property="og:title" content="HapLane — 鸿蒙 HAP 一键签名·部署">
+<meta property="og:description" content="装个 HAP 能卡你一下午？HapLane 一条命令搞定：签名 + 装机 + 验签。开源可查，不破解。">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%9B%B0%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --ink:#0c1310; --ink-2:#0f1814; --panel:#13201a; --panel-2:#0f1713;
+    --line:#20302a; --line-2:#2c4038;
+    --fg:#e9f1ec; --fg-2:#b7c7bf; --muted:#7d928a;
+    --signed:#41d885; --signed-dim:#2a9d63; --warn:#e6a53c; --warn-dim:#a9791f;
+    --accent:#41d885; --accent-ink:#04120a; --harmony:#3d7bff;
+    --shadow:0 1px 0 rgba(255,255,255,.03), 0 24px 60px -30px rgba(0,0,0,.7);
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,"JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    --maxw:1080px;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --ink:#eef2ee; --ink-2:#e7ede8; --panel:#ffffff; --panel-2:#f5f9f5;
+      --line:#dde6df; --line-2:#c7d5cc;
+      --fg:#0d1a13; --fg-2:#3c5348; --muted:#5f746a;
+      --signed:#0f8a4d; --signed-dim:#0f8a4d; --warn:#9a6a12; --warn-dim:#9a6a12;
+      --accent:#0f8a4d; --accent-ink:#ffffff; --harmony:#0a59f7;
+      --shadow:0 1px 0 rgba(255,255,255,.6), 0 22px 50px -32px rgba(20,60,40,.35);
+    }
+  }
+  :root[data-theme="light"]{
+    --ink:#eef2ee; --ink-2:#e7ede8; --panel:#ffffff; --panel-2:#f5f9f5;
+    --line:#dde6df; --line-2:#c7d5cc;
+    --fg:#0d1a13; --fg-2:#3c5348; --muted:#5f746a;
+    --signed:#0f8a4d; --signed-dim:#0f8a4d; --warn:#9a6a12; --warn-dim:#9a6a12;
+    --accent:#0f8a4d; --accent-ink:#ffffff; --harmony:#0a59f7;
+    --shadow:0 1px 0 rgba(255,255,255,.6), 0 22px 50px -32px rgba(20,60,40,.35);
+  }
+  :root[data-theme="dark"]{
+    --ink:#0c1310; --ink-2:#0f1814; --panel:#13201a; --panel-2:#0f1713;
+    --line:#20302a; --line-2:#2c4038;
+    --fg:#e9f1ec; --fg-2:#b7c7bf; --muted:#7d928a;
+    --signed:#41d885; --signed-dim:#2a9d63; --warn:#e6a53c; --warn-dim:#a9791f;
+    --accent:#41d885; --accent-ink:#04120a; --harmony:#3d7bff;
+    --shadow:0 1px 0 rgba(255,255,255,.03), 0 24px 60px -30px rgba(0,0,0,.7);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--ink);color:var(--fg);font-family:var(--sans);
+    line-height:1.6;-webkit-font-smoothing:antialiased;letter-spacing:.005em;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  a{color:inherit;}
+  ::selection{background:var(--accent);color:var(--accent-ink);}
+
+  /* ---- top bar ---- */
+  .top{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);
+    background:color-mix(in srgb,var(--ink) 82%,transparent);
+    border-bottom:2px solid var(--line);
+    border-image:linear-gradient(90deg,var(--harmony),var(--signed)) 1;}
+  .top .wrap{display:flex;align-items:center;gap:20px;height:60px;}
+  .brand{font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:-.02em;
+    display:flex;align-items:center;gap:9px;}
+  .brand .bracket{color:var(--accent);}
+  .top nav{margin-left:auto;display:flex;gap:26px;font-size:14px;color:var(--fg-2);}
+  .top nav a{text-decoration:none;}
+  .top nav a:hover{color:var(--fg);}
+  .themeBtn{font-family:var(--mono);font-size:12px;border:1px solid var(--line-2);
+    background:transparent;color:var(--fg-2);padding:6px 10px;border-radius:7px;cursor:pointer;}
+  .themeBtn:hover{color:var(--fg);border-color:var(--accent);}
+  @media(max-width:720px){.top nav{display:none;}}
+
+  /* ---- hero ---- */
+  .hero{padding:76px 0 40px;}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--signed);display:flex;align-items:center;gap:10px;margin-bottom:22px;}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--signed);
+    box-shadow:0 0 0 4px color-mix(in srgb,var(--signed) 22%,transparent);}
+  h1{font-family:var(--sans);font-weight:800;font-size:clamp(34px,6vw,60px);line-height:1.04;
+    letter-spacing:-.03em;margin:0 0 20px;text-wrap:balance;max-width:16ch;}
+  h1 .hl{color:var(--signed);}
+  .lede{font-size:clamp(16px,2.1vw,19px);color:var(--fg-2);max-width:52ch;margin:0 0 30px;}
+  .lede b{color:var(--fg);font-weight:600;}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .btn{font-family:var(--mono);font-size:14px;font-weight:600;text-decoration:none;
+    padding:12px 18px;border-radius:10px;border:1px solid transparent;display:inline-flex;gap:9px;align-items:center;}
+  .btn.primary{background:var(--accent);color:var(--accent-ink);}
+  .btn.primary:hover{filter:brightness(1.08);}
+  .btn.ghost{border-color:var(--line-2);color:var(--fg);}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent);}
+  .cta .note{font-family:var(--mono);font-size:12.5px;color:var(--muted);}
+
+  /* ---- terminal ---- */
+  .term{margin:44px 0 8px;background:var(--panel-2);border:1px solid var(--line-2);
+    border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
+  .term .bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);
+    background:var(--panel);}
+  .term .bar .lamps{display:flex;gap:7px;}
+  .term .bar .lamps i{width:11px;height:11px;border-radius:50%;background:var(--line-2);display:block;}
+  .term .bar .path{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-left:6px;}
+  .term .bar .tag{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--signed);
+    border:1px solid var(--line-2);border-radius:20px;padding:3px 10px;}
+  .term .body{font-family:var(--mono);font-size:13.5px;line-height:1.85;padding:20px 20px 22px;
+    min-height:288px;overflow-x:auto;}
+  .ln{white-space:pre;display:block;}
+  .ln .p{color:var(--muted);}
+  .ln .cmd{color:var(--fg);}
+  .ln .k{color:var(--fg-2);}
+  .ln .v{color:var(--fg);}
+  .ln .ok{color:var(--signed);}
+  .ln .warn{color:var(--warn);}
+  .ln.done{color:var(--signed);font-weight:600;}
+  .cursor{display:inline-block;width:8px;height:15px;transform:translateY(2px);
+    background:var(--signed);animation:blink 1.05s steps(2) infinite;}
+  @keyframes blink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
+  .term .foot{border-top:1px solid var(--line);padding:11px 16px;display:flex;gap:16px;
+    font-family:var(--mono);font-size:12px;color:var(--muted);flex-wrap:wrap;}
+  .term .foot b{color:var(--fg-2);font-weight:600;}
+
+  /* ---- generic section ---- */
+  section{padding:64px 0;border-top:1px solid var(--line);}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:14px;}
+  h2{font-size:clamp(24px,3.6vw,33px);font-weight:800;letter-spacing:-.02em;margin:0 0 14px;
+    text-wrap:balance;max-width:22ch;}
+  .sub{color:var(--fg-2);max-width:56ch;margin:0 0 34px;font-size:16px;}
+
+  /* ---- before / after ---- */
+  .ba{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch;}
+  .ba .card{border:1px solid var(--line);border-radius:13px;padding:22px;background:var(--panel);}
+  .ba .card.before{background:var(--ink-2);}
+  .ba h3{margin:0 0 14px;font-size:14px;font-family:var(--mono);letter-spacing:.02em;}
+  .ba .before h3{color:var(--warn);}
+  .ba .after h3{color:var(--signed);}
+  .steps{list-style:none;margin:0;padding:0;font-family:var(--mono);font-size:13px;color:var(--fg-2);}
+  .steps li{padding:6px 0;border-bottom:1px dashed var(--line);display:flex;gap:10px;}
+  .steps li:last-child{border-bottom:0;}
+  .steps li .n{color:var(--muted);min-width:20px;}
+  .ba .arrow{align-self:center;font-family:var(--mono);color:var(--accent);font-size:22px;}
+  .after .one{font-family:var(--mono);font-size:15px;color:var(--fg);background:var(--panel-2);
+    border:1px solid var(--line-2);border-radius:9px;padding:14px;margin-bottom:14px;}
+  .after .one .ok{color:var(--signed);}
+  .after p{margin:0;color:var(--fg-2);font-size:13.5px;}
+  @media(max-width:760px){.ba{grid-template-columns:1fr;}.ba .arrow{transform:rotate(90deg);justify-self:center;}}
+
+  /* ---- AI真能修 ---- */
+  .fix{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center;}
+  .fix .say{border-left:3px solid var(--warn);padding:6px 0 6px 18px;margin:0 0 22px;}
+  .fix .say .lbl{font-family:var(--mono);font-size:12px;color:var(--warn);letter-spacing:.04em;}
+  .fix .say p{margin:6px 0 0;color:var(--fg);font-weight:600;}
+  .fix ul{margin:0;padding:0;list-style:none;display:grid;gap:14px;}
+  .fix li{display:flex;gap:13px;color:var(--fg-2);font-size:15px;}
+  .fix li .m{color:var(--signed);font-family:var(--mono);flex:none;}
+  .fixcard{border:1px solid var(--line-2);border-radius:13px;background:var(--panel-2);
+    font-family:var(--mono);font-size:13px;overflow:hidden;box-shadow:var(--shadow);}
+  .fixcard .h{padding:12px 16px;border-bottom:1px solid var(--line);color:var(--muted);
+    display:flex;justify-content:space-between;}
+  .fixcard .rows{padding:8px 0;}
+  .fixcard .r{padding:8px 16px;display:flex;gap:12px;align-items:baseline;}
+  .fixcard .r .st{flex:none;width:16px;}
+  .fixcard .r .warn{color:var(--warn);} .fixcard .r .ok{color:var(--signed);}
+  .fixcard .r small{color:var(--muted);margin-left:auto;}
+  @media(max-width:760px){.fix{grid-template-columns:1fr;}}
+
+  /* ---- table ---- */
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:13px;background:var(--panel);}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px;}
+  th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle;}
+  thead th{font-family:var(--mono);font-size:12px;letter-spacing:.03em;color:var(--fg-2);font-weight:600;}
+  thead th.us{color:var(--signed);}
+  tbody th{font-weight:500;color:var(--fg-2);font-size:13.5px;}
+  td{text-align:center;font-variant-numeric:tabular-nums;color:var(--muted);}
+  td.us{color:var(--signed);background:color-mix(in srgb,var(--signed) 7%,transparent);font-weight:600;}
+  .yes{color:var(--signed);} .no{color:var(--line-2);}
+  tbody tr:last-child th,tbody tr:last-child td{border-bottom:0;}
+  caption{caption-side:bottom;font-family:var(--mono);font-size:11.5px;color:var(--muted);
+    padding:12px 4px 0;text-align:left;}
+
+  /* ---- 3 差异化 ---- */
+  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .col{border:1px solid var(--line);border-radius:13px;padding:22px;background:var(--panel);}
+  .col .idx{font-family:var(--mono);font-size:12px;color:var(--signed);margin-bottom:12px;}
+  .col h3{margin:0 0 9px;font-size:17px;font-weight:700;letter-spacing:-.01em;}
+  .col p{margin:0;color:var(--fg-2);font-size:14px;}
+  .col .why{margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--muted);
+    border-top:1px solid var(--line);padding-top:11px;}
+  @media(max-width:760px){.cols{grid-template-columns:1fr;}}
+
+  /* ---- community ---- */
+  .join{background:var(--panel);border:1px solid var(--line-2);border-radius:16px;padding:34px;
+    display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;box-shadow:var(--shadow);}
+  .join h2{margin-bottom:12px;}
+  @media(max-width:760px){.join{grid-template-columns:1fr;}}
+
+  /* ---- footer ---- */
+  footer{border-top:1px solid var(--line);padding:44px 0 60px;color:var(--muted);font-size:13px;}
+  .foot-grid{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;}
+  .foot-grid .links{display:flex;gap:22px;font-family:var(--mono);}
+  .foot-grid a{text-decoration:none;color:var(--fg-2);}
+  .foot-grid a:hover{color:var(--accent);}
+  .friends{margin-top:26px;font-family:var(--mono);font-size:12px;color:var(--muted);}
+  .friends b{color:var(--fg-2);font-weight:600;}
+  .disc{margin-top:18px;font-size:12px;color:var(--muted);max-width:60ch;}
+
+  @media (prefers-reduced-motion: reduce){.cursor{animation:none;}}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+
+  /* platform-reference (HarmonyOS blue) — used only where pointing AT the platform */
+  .compat{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:4px 0 32px;
+    font-family:var(--mono);font-size:12px;}
+  .compat .lead{color:var(--muted);letter-spacing:.06em;}
+  .compat .chip{color:var(--harmony);border-radius:20px;padding:4px 11px;
+    border:1px solid color-mix(in srgb,var(--harmony) 42%,var(--line));
+    background:color-mix(in srgb,var(--harmony) 10%,transparent);}
+  .compat .sep{color:var(--line-2);}
+  thead th.plat{color:var(--harmony);}
+  td.plat-tint{background:color-mix(in srgb,var(--harmony) 5%,transparent);}
+
+  /* proof strip */
+  .proof{display:flex;gap:10px 20px;flex-wrap:wrap;align-items:center;margin:20px 0 2px;
+    font-family:var(--mono);font-size:12px;color:var(--fg-2);}
+  .proof span{display:inline-flex;align-items:center;gap:7px;}
+  .proof b{color:var(--signed);font-weight:700;}
+  .proof .d{width:4px;height:4px;border-radius:50%;background:var(--line-2);display:inline-block;}
+
+  /* command table */
+  .cmd-t td{text-align:left;color:var(--fg-2);}
+  .cmd-t th{white-space:nowrap;}
+  .cmd-t code{font-family:var(--mono);color:var(--fg);font-size:12.5px;}
+  .cmd-t td:last-child{color:var(--muted);font-family:var(--mono);font-size:12.5px;}
+
+  /* honest boundary */
+  .honest-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .hc{border:1px solid var(--line);border-radius:13px;padding:22px 24px;background:var(--panel);}
+  .hc h3{margin:0 0 15px;font-family:var(--mono);font-size:13px;letter-spacing:.03em;}
+  .hc h3.no{color:var(--warn);} .hc h3.yes{color:var(--signed);}
+  .hc ul{margin:0;padding:0;list-style:none;display:grid;gap:12px;}
+  .hc li{color:var(--fg-2);font-size:14px;padding-left:18px;position:relative;line-height:1.5;}
+  .hc li::before{content:"\203A";position:absolute;left:0;color:var(--muted);}
+  @media(max-width:760px){.honest-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <span class="brand"><span class="bracket">[</span>HapLane<span class="bracket">]</span></span>
+    <nav>
+      <a href="#cmd">命令</a>
+      <a href="#compare">对比</a>
+      <a href="#">开源</a>
+      <a href="#join">上手</a>
+    </nav>
+    <button class="themeBtn" id="themeBtn" type="button" aria-label="切换明暗主题">◐ 主题</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero" style="border-top:0;">
+    <div class="wrap">
+      <div class="eyebrow"><span class="dot"></span>鸿蒙 HAP · 签名 · 调试 · 部署</div>
+      <h1>一条命令，<span class="hl">穿过签名墙</span>。</h1>
+      <p class="lede">纯血鸿蒙装个 HAP，能卡你一下午——华为账号、UDID、配额、证书链、system 权限报错，一步错就装不上。<b>HapLane 把这七步折成一条命令</b>，装完自动验签。想接 CI、让 AI agent 跑也行，先图一键就够。</p>
+      <div class="cta">
+        <a class="btn primary" href="#join">▸ 开始使用</a>
+        <a class="btn ghost" href="#fix">看 AI 导览怎么"真能修"</a>
+        <span class="note">无需破解 · 走你自己的账号签名</span>
+      </div>
+
+      <div class="compat" aria-label="适配平台与设备">
+        <span class="lead">适配</span>
+        <span class="chip">HarmonyOS NEXT</span>
+        <span class="chip">OpenHarmony</span>
+        <span class="sep">|</span>
+        <span class="chip">手机</span>
+        <span class="chip">平板</span>
+        <span class="chip">穿戴</span>
+        <span class="chip">智慧屏</span>
+      </div>
+
+      <div class="term" id="term" aria-label="HapLane 部署演示终端">
+        <div class="bar">
+          <span class="lamps"><i></i><i></i><i></i></span>
+          <span class="path">~/app · haplane</span>
+          <span class="tag">● live</span>
+        </div>
+        <div class="body" id="termBody"></div>
+        <div class="foot">
+          <span><b>取 UDID</b> 自动</span>
+          <span><b>签名</b> 客户证书适配器</span>
+          <span><b>system 权限</b> 报错自动降级</span>
+          <span><b>验签</b> 二次核实</span>
+        </div>
+      </div>
+
+      <div class="proof" aria-label="可信度">
+        <span><b>✓</b> 开源可查 · MIT</span><i class="d"></i>
+        <span><b>✓</b> 模拟器五步全绿实测</span><i class="d"></i>
+        <span><b>✓</b> 纯 Node · macOS / Windows / Linux</span><i class="d"></i>
+        <span><b>✓</b> 接任意 MCP agent</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="cmd">
+    <div class="wrap">
+      <div class="kicker">命令</div>
+      <h2>一条 deploy 搞定，也能拆成四步。</h2>
+      <p class="sub">deploy 一条龙：签名 + 装机 + 验签。只想签名、或只想推包？拆开单独调那一步就行。</p>
+      <div class="tablewrap">
+        <table class="cmd-t">
+          <thead>
+            <tr><th>命令</th><th>做什么</th><th>要连设备？</th></tr>
+          </thead>
+          <tbody>
+            <tr><th><code>haplane deploy app.hap</code></th><td>签名 → 装机 → 验签，一条龙</td><td>要（装机那步）</td></tr>
+            <tr><th><code>haplane sign app.hap</code></th><td>只签名，产出签好的 HAP</td><td>上架 / CI 不用；debug 真机连一次取 UDID</td></tr>
+            <tr><th><code>haplane install app.hap</code></th><td>只推已签好的包（≈更聪明的 hdc install）</td><td>要</td></tr>
+            <tr><th><code>haplane verify app.hap</code></th><td>只验签名，判真假</td><td>不用</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="why">
+    <div class="wrap">
+      <div class="kicker">手动 vs 一键</div>
+      <h2>签名墙不是难，是"烦"——每一步都能卡你半天。</h2>
+      <p class="sub">HoKit、小白助手是把这些步骤塞进界面里一个个点；HapLane 是一条命令跑完，还能写进脚本、让 AI 帮你跑。</p>
+      <div class="ba">
+        <div class="card before">
+          <h3>⚠ 手动侧载一个 HAP</h3>
+          <ol class="steps">
+            <li><span class="n">01</span>开发者模式 + USB/无线调试 + 手机弹窗授权</li>
+            <li><span class="n">02</span>hdc 连真机，取 UDID</li>
+            <li><span class="n">03</span>AGC 注册设备、申请 debug 证书（配额 2 本/年）</li>
+            <li><span class="n">04</span>申请 Profile，绑死 bundleName + UDID</li>
+            <li><span class="n">05</span>包名被占？逐用户改名</li>
+            <li><span class="n">06</span>hap-sign-tool 签名（路径不能有中文）</li>
+            <li><span class="n">07</span>装机 → system 权限报错 → 卡住</li>
+          </ol>
+        </div>
+        <div class="arrow">→</div>
+        <div class="card after">
+          <h3>✓ HapLane</h3>
+          <div class="one">$ haplane deploy ./app.hap<br><span class="ok">✓ 已装上设备 · 6.2s</span></div>
+          <p>连设备 + 一条命令。UDID、包名、证书材料、system 权限降级——全自动，不用你填。证书到期自动重签。这套骨架已在模拟器五步全绿实测（hdc→sign→install→verify）。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="fix">
+    <div class="wrap">
+      <div class="kicker">AI 导览 · 真能修</div>
+      <div class="fix">
+        <div>
+          <h2>别人给你一句"AI 分析中"，HapLane 直接把它装上。</h2>
+          <div class="say">
+            <span class="lbl">⚠ 老实说</span>
+            <p>侧载站那些"AI 助手"多是网页套壳——给你一句分类建议就完了。HapLane 是真能跑签名、部署、诊断的命令行工具，不是网页上点一下看个热闹。</p>
+          </div>
+          <ul>
+            <li><span class="m">→</span><span>丢一个装不上的 HAP，它真诊断：包名被占？覆盖装撞 <code style="font-family:var(--mono);color:var(--warn)">9568332</code>（签名不一致）？system 权限不够？</span></li>
+            <li><span class="m">→</span><span><b style="color:var(--fg)">system 权限报错自动降级</b>——竞品都卡在这个通用坑，我们把它做成自动重装。</span></li>
+            <li><span class="m">→</span><span>签名走你自己的 AGC 材料适配器，不凭空造信任。</span></li>
+          </ul>
+        </div>
+        <div class="fixcard" aria-hidden="true">
+          <div class="h"><span>haplane doctor ./watch.hap</span><span>agent</span></div>
+          <div class="rows">
+            <div class="r"><span class="st ok">✓</span><span class="k">读取包名</span><small>com.demo.watchface</small></div>
+            <div class="r"><span class="st ok">✓</span><span class="k">证书链校验</span><small>OpenHarmony ✓</small></div>
+            <div class="r"><span class="st warn">!</span><span class="k">install 失败</span><small>system 权限</small></div>
+            <div class="r"><span class="st ok">↳</span><span class="k" style="color:var(--signed)">自动降级 apl → normal，重装</span><small>fixed</small></div>
+            <div class="r"><span class="st ok">✓</span><span class="k">穿戴大包推送</span><small>4.8 MB ✓</small></div>
+            <div class="r"><span class="st ok">✓</span><span class="k">valid</span><small>true</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <div class="wrap">
+      <div class="kicker">和别的工具比</div>
+      <h2>解析、投屏都有人做了。命令行签名部署这块，交给 HapLane。</h2>
+      <p class="sub">HapViewer 看包强、HoKit 有投屏 GUI、DevEco Code 是华为的 IDE 助手，各有各的用处。你要在终端里、在脚本和 CI 里、让 AI 帮你签名装机——这正是 HapLane 的活。</p>
+      <div class="tablewrap">
+        <table>
+          <caption>对比基于各工具公开能力与实测；空位表示未提供或非其定位，非贬义。</caption>
+          <thead>
+            <tr>
+              <th>能力</th>
+              <th class="us">HapLane</th>
+              <th class="plat">DevEco Code</th>
+              <th class="plat">HoKit</th>
+              <th class="plat">HapViewer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>无头 CLI（无 GUI）</th><td class="us yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+            <tr><th>接任意 MCP agent</th><td class="us yes">✓</td><td>仅自家</td><td class="no">—</td><td class="no">—</td></tr>
+            <tr><th>CI 流水线集成</th><td class="us yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+            <tr><th>system 权限自动降级</th><td class="us yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+            <tr><th>穿戴大包推送</th><td class="us yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+            <tr><th>HAP 深度解析</th><td>基础</td><td class="yes">✓</td><td>基础</td><td class="yes">✓</td></tr>
+            <tr><th>投屏 / 消费级 GUI</th><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td></tr>
+            <tr><th>开源免费</th><td class="us yes">✓</td><td class="no">—</td><td>闭源免费</td><td class="yes">✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="edge">
+    <div class="wrap">
+      <div class="kicker">最容易卡的三件事</div>
+      <h2>签名的坑大多集中在这三处。HapLane 讲清楚，也替你处理掉。</h2>
+      <p class="sub">下面这三样，是真机调试和上架时最容易卡半天的地方。</p>
+      <div class="cols">
+        <div class="col">
+          <div class="idx">认证 · 01</div>
+          <h3>华为三层认证，一次讲明白</h3>
+          <p>寄生会话 / cookie 会话 / 机器密钥（client_credentials）该用哪个？配额墙、包名全局占用（装 B站撞过 <code style="font-family:var(--mono);color:var(--warn)">205339064</code> 吧？）怎么绕？文档讲透，不用自己猜。</p>
+          <div class="why">配套《签名墙通关手册》</div>
+        </div>
+        <div class="col">
+          <div class="idx">卡点 · 02</div>
+          <h3>system 权限报错，自动降级</h3>
+          <p>装 system 应用几乎都会撞权限报错。HapLane 自动把 apl 降到能装的档再重装，不用你手改配置。</p>
+          <div class="why">haplane deploy 自动完成</div>
+        </div>
+        <div class="col">
+          <div class="idx">少有人做 · 03</div>
+          <h3>穿戴大包也能推</h3>
+          <p>watch 表盘、5MB 以上的大包推送——别的工具容易卡在这，HapLane 单独处理这条路。</p>
+          <div class="why">watch / 大表盘实测中</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="honest">
+    <div class="wrap">
+      <div class="kicker">⚠ 老实说</div>
+      <h2>它不做什么，和你需要准备什么。</h2>
+      <p class="sub">签名这件事，本来就该在你有权限的范围内做。HapLane 不碰灰色地带，也不藏着前提。</p>
+      <div class="honest-grid">
+        <div class="hc">
+          <h3 class="no">不做</h3>
+          <ul>
+            <li>不破解、不绕过签名——只帮你把该走的流程走顺</li>
+            <li>只处理你自己或已授权的设备 / 账号</li>
+            <li>不碰纯血鸿蒙真机的商用根：真机走你自己的 AGC 材料</li>
+          </ul>
+        </div>
+        <div class="hc">
+          <h3 class="yes">前提</h3>
+          <ul>
+            <li>华为开发者账号 + AGC（真机 / 上架签名要）</li>
+            <li>华为 SDK：hdc / hap-sign-tool / java（各平台官方版都有）</li>
+            <li>Node（或用单文件二进制）；macOS / Windows / Linux 都行</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="join">
+    <div class="wrap">
+      <div class="join">
+        <div>
+          <div class="kicker">上手 & 求助</div>
+          <h2>装上，跑第一条命令。卡住了就来问。</h2>
+          <p class="sub" style="margin-bottom:20px;">HapLane 开源免费，五分钟装好、一条命令跑通。签名踩坑、穿戴推送、AGC 配额这些，开发者交流群里一起解，问了大概率有人答。要帮你把 app 签好、上架、代交付，也可以直接找我。</p>
+          <div class="cta">
+            <a class="btn primary" href="#">▸ 快速开始</a>
+            <a class="btn ghost" href="#">开发者交流群</a>
+            <a class="btn ghost" href="#">上架 / 代交付</a>
+          </div>
+        </div>
+        <div style="font-family:var(--mono);font-size:13px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);">
+          <div style="padding:11px 16px;border-bottom:1px solid var(--line);color:var(--muted);display:flex;justify-content:space-between;">
+            <span>快速开始</span><span>~30 秒</span>
+          </div>
+          <div style="padding:16px 18px;line-height:2.1;overflow-x:auto;">
+            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> npm i -g haplane        <span style="color:var(--muted)"># 或 bun / 单文件二进制</span></div>
+            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> haplane doctor          <span style="color:var(--muted)"># 检查环境</span></div>
+            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> haplane deploy app.hap  <span style="color:var(--signed)"># 连设备，一条命令 ✓</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <span class="brand"><span class="bracket">[</span>HapLane<span class="bracket">]</span> · 鸿蒙 HAP 签名部署工具</span>
+      <span class="links">
+        <a href="#">Gitee</a><a href="#">GitHub</a><a href="#">文档</a><a href="#">公众号</a>
+      </span>
+    </div>
+    <p class="friends">相关：<a href="#">HapViewer</a> · <a href="#">OpenStore</a> · <a href="#">鸿蒙应用市场数据看板</a></p>
+    <p class="disc">HapLane 只处理你自己或已授权设备 / 账号的 HAP 签名与部署，不绕过任何非授权系统的安全控制。开源，向 Fastlane 致敬。</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  btn.addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    if(!cur){cur=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+    root.setAttribute('data-theme', cur==='dark'?'light':'dark');
+  });
+
+  var body=document.getElementById('termBody');
+  var lines=[
+    {h:'<span class="p">$</span> <span class="cmd">haplane deploy ./app.hap</span>'},
+    {t:'<span class="p">›</span> <span class="k">连接设备</span>          <span class="v">hdc</span>  <span class="ok">✓</span>  <span class="k">UDID 454D5504…</span>'},
+    {t:'<span class="p">›</span> <span class="k">读取包名</span>          <span class="v">com.example.app</span>  <span class="ok">✓</span>'},
+    {t:'<span class="p">›</span> <span class="k">生成签名材料</span>      <span class="v">OpenHarmony 证书链</span>  <span class="ok">✓</span>'},
+    {t:'<span class="p">›</span> <span class="k">签名</span>              <span class="v">sign-app</span>  <span class="ok">✓</span>'},
+    {t:'<span class="p">›</span> <span class="k">安装</span>              <span class="warn">system 权限报错</span> <span class="warn">⚠</span>  <span class="ok">自动降级 → 重装 ✓</span>'},
+    {t:'<span class="p">›</span> <span class="k">验签</span>              <span class="v">valid:</span> <span class="ok">true ✓</span>'},
+    {d:'✓ 已装上设备 · 用时 6.2s     一条命令，穿过签名墙。'}
+  ];
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function el(cls){var d=document.createElement('span');d.className='ln'+(cls?' '+cls:'');return d;}
+  if(reduce){
+    lines.forEach(function(l){var d=el(l.d?'done':'');d.innerHTML=l.h||l.t||l.d;body.appendChild(d);});
+    return;
+  }
+  var i=0, cursor=document.createElement('span'); cursor.className='cursor';
+  function step(){
+    if(i>=lines.length){return;}
+    var l=lines[i];
+    var d=el(l.d?'done':'');
+    d.innerHTML=(l.h||l.t||l.d);
+    body.appendChild(d);
+    d.appendChild(cursor);
+    i++;
+    var delay = l.h?520 : l.d?640 : (420+Math.floor((i*137)%260));
+    setTimeout(step, delay);
+  }
+  step();
+})();
+</script>
+</body>
+</html>
