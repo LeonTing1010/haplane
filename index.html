@@ -351,34 +351,32 @@
       <p class="sub">HapLane 是 MCP 工具——不用背命令，agent 自己选工具、撞错自己修。粘一段配置就接上，支持任意 MCP 客户端。</p>
       <div class="mcp-grid">
         <div>
-          <div class="mcp-label">1 · 下载 MCP（Gitee 直连，不走 npm）</div>
-          <div class="codebox"><a href="https://gitee.com/LeonTing1010/haplane/releases/download/v0.3.0/haplane-mcp.mjs">haplane-mcp.mjs ⬇</a>　放到本地任意路径</div>
-          <div class="mcp-label">2 · 粘进你的 MCP 配置</div>
+          <div class="mcp-label">1 · 粘这段进 MCP 配置就行（零下载，npx 自动拉起）</div>
           <div class="codebox json">{
   <span class="k2">"mcpServers"</span>: {
     <span class="k2">"haplane"</span>: {
-      <span class="k2">"command"</span>: <span class="s">"node"</span>,
-      <span class="k2">"args"</span>: [<span class="s">"/你的路径/haplane-mcp.mjs"</span>]
+      <span class="k2">"command"</span>: <span class="s">"npx"</span>,
+      <span class="k2">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"-p"</span>, <span class="s">"haplane"</span>, <span class="s">"haplane-mcp"</span>]
     }
   }
 }</div>
-          <div class="mcp-label">或 · 已上 npm，也能用 npx（你的 npm 走 npmmirror 时国内更快）</div>
-          <div class="codebox json"><span class="k2">"command"</span>: <span class="s">"npx"</span>, <span class="k2">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"-p"</span>, <span class="s">"haplane"</span>, <span class="s">"haplane-mcp"</span>]</div>
-          <div class="mcp-label">3 · 在 AI 里直接说</div>
+          <div class="mcp-label">2 · 在 AI 里直接说</div>
           <div class="codebox nl">「帮我把 ./app.hap 签名装到手机」——agent 自己调 <b style="color:var(--fg)">deploy_to_device</b>，撞 system 权限自动降级重装，装完验签。</div>
+          <div class="mcp-label">国内 npm 拉不动？下单文件、把 command 改成 node</div>
+          <div class="codebox">下 <a href="https://gitee.com/LeonTing1010/haplane/releases">haplane-mcp.mjs ⬇</a>，配置里改 <span class="k2">"command"</span>:<span class="s">"node"</span>、<span class="k2">"args"</span>:[<span class="s">"/你的路径/haplane-mcp.mjs"</span>]</div>
         </div>
         <div>
           <div class="mcp-label">支持的客户端</div>
           <div class="chips">
             <span class="c">Claude Code</span><span class="c">Cursor</span><span class="c">Cline</span><span class="c">DevEco Code</span><span class="c">任意 MCP 客户端</span>
           </div>
-          <div class="mcp-label">11 个工具，agent 自己选</div>
+          <div class="mcp-label">12 个工具，agent 自己选</div>
           <div class="chips">
-            <span class="c tool">deploy_to_device</span><span class="c tool">sign</span><span class="c tool">verify</span><span class="c tool">install</span><span class="c tool">doctor</span><span class="c tool">gen_signing_material</span><span class="c tool">agc_provision</span><span class="c tool">agc_status</span><span class="c tool">rename_bundle</span><span class="c tool">hdc_devices</span><span class="c tool">hdc_udid</span>
+            <span class="c tool">deploy_to_device</span><span class="c tool">doctor</span><span class="c tool">search_hap</span><span class="c tool">sign</span><span class="c tool">install</span><span class="c tool">verify</span><span class="c tool">gen_signing_material</span><span class="c tool">rename_bundle</span><span class="c tool">agc_status</span><span class="c tool">agc_provision</span><span class="c tool">hdc_devices</span><span class="c tool">hdc_udid</span>
           </div>
         </div>
       </div>
-      <p class="sub" style="margin:26px 0 0;font-size:14px;">需 Node ≥ 20（做鸿蒙开发一般都有，hvigor 就依赖它）。更想命令行直接用？往下看。</p>
+      <p class="sub" style="margin:26px 0 0;font-size:14px;">需 Node ≥ 18（做鸿蒙开发一般都有，hvigor 就依赖它）。更想命令行直接用？往下看。</p>
     </div>
   </section>
 
@@ -566,21 +564,21 @@
         <div>
           <div class="kicker">上手 & 求助</div>
           <h2>装上，跑第一条命令。卡住了就来问。</h2>
-          <p class="sub" style="margin-bottom:20px;"><b style="color:var(--fg)">v0.3.0 已发布</b>，走 Gitee Release 国内直连下载（不走 npm，国内拉不动）。<code style="font-family:var(--mono);color:var(--fg)">haplane.mjs</code> 22KB，Windows / Linux / macOS 通用（需 Node ≥ 20，做鸿蒙开发一般都有）；macOS 另有免 Node 原生版。<b style="color:var(--fg)">签名踩坑、穿戴推送、AGC 配额，开 Issue 一起解。</b></p>
+          <p class="sub" style="margin-bottom:20px;"><b style="color:var(--fg)">一行装全局</b>：<code style="font-family:var(--mono);color:var(--fg)">npm i -g haplane</code>，装完直接有 <code style="font-family:var(--mono);color:var(--fg)">haplane</code> 命令；<b style="color:var(--fg)">连装都不想装</b>就 <code style="font-family:var(--mono);color:var(--fg)">npx -y haplane deploy …</code> 直接跑。国内 npm 慢，把 registry 设成 npmmirror，或下 Gitee Release 单文件（<code style="font-family:var(--mono);color:var(--fg)">node haplane.mjs</code>，免 npm）。需 Node ≥ 18。<b style="color:var(--fg)">签名踩坑、穿戴推送、AGC 配额，开 Issue 一起解。</b></p>
           <div class="cta">
-            <a class="btn primary" href="https://gitee.com/LeonTing1010/haplane/releases/v0.3.0">▸ 下载 v0.3.0</a>
+            <a class="btn primary" href="https://gitee.com/LeonTing1010/haplane/releases">▸ Gitee Release 下载</a>
             <a class="btn ghost" href="https://gitee.com/LeonTing1010/haplane/blob/main/docs/%E7%AD%BE%E5%90%8D%E5%A2%99%E9%80%9A%E5%85%B3%E6%89%8B%E5%86%8C.md">签名墙通关手册</a>
             <a class="btn ghost" href="https://gitee.com/LeonTing1010/haplane/issues">开 Issue 问我</a>
           </div>
         </div>
         <div style="font-family:var(--mono);font-size:13px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);">
           <div style="padding:11px 16px;border-bottom:1px solid var(--line);color:var(--muted);display:flex;justify-content:space-between;">
-            <span>三步跑通</span><span style="color:var(--signed)">v0.3.0</span>
+            <span>三步跑通</span><span style="color:var(--signed)">npm / npx</span>
           </div>
           <div style="padding:16px 18px;line-height:2.1;overflow-x:auto;">
-            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> node haplane.mjs setup            <span style="color:var(--muted)"># 探测 SDK + 生成配置</span></div>
-            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> node haplane.mjs doctor           <span style="color:var(--muted)"># 体检工具链与材料</span></div>
-            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> node haplane.mjs deploy --in x.hap <span style="color:var(--signed)"># 签名→装机→验签 ✓</span></div>
+            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> npm i -g haplane                <span style="color:var(--muted)"># 或 npx -y haplane …</span></div>
+            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> haplane doctor                  <span style="color:var(--muted)"># 体检工具链与材料</span></div>
+            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> haplane deploy --in app.hap     <span style="color:var(--signed)"># 签名→装机→验签 ✓</span></div>
           </div>
         </div>
       </div>
