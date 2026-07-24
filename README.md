@@ -73,7 +73,7 @@ HoKit、小白助手是把这些塞进界面里一个个点；**HapLane 是一�
 | 穿戴大包推送 | ✓ | — | — | — |
 | HAP 深度解析 | 基础 | ✓ | 基础 | ✓ |
 | 投屏 / 消费级 GUI | — | — | ✓ | — |
-| 开源免费 | 免费·暂未开源 | — | 闭源免费 | ✓ |
+| 开源免费 | 开源可查·MIT | — | 闭源免费 | ✓ |
 
 > 对比基于各工具公开能力与实测；空位表示未提供或非其定位，非贬义。HapViewer 看包强、HoKit 有投屏 GUI、DevEco Code 是华为的 IDE 助手，各有各的用处。
 
@@ -115,4 +115,4 @@ $ node haplane.mjs deploy --in ./app.hap   # 对现成 HAP：签名 → 装机 �
 
 ---
 
-开源，向 Fastlane 致敬。HapLane 只处理你自己或已授权设备 / 账号的 HAP 签名与部署，不绕过任何非授权系统的安全控制。
+**开源可查（MIT）**：工具代码 [Gitee](https://gitee.com/LeonTing1010/hap-deploy) · [GitHub](https://github.com/LeonTing1010/hap-deploy-cli)。向 Fastlane 致敬——工具免费开源，价值在交付与手册。HapLane 只处理你自己或已授权设备 / 账号的 HAP 签名与部署，不绕过任何非授权系统的安全控制。
