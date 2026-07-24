@@ -2,7 +2,7 @@
 
 > **一条命令，穿过签名墙。** CLI + MCP，agent 可驱动，装完自动验签。
 >
-> `适配 HarmonyOS NEXT · OpenHarmony` ｜ `手机 / 平板 / 穿戴 / 智慧屏` ｜ `内测中 · 计划 MIT 开源` ｜ `无需破解 · 走你自己的账号签名`
+> `适配 HarmonyOS NEXT · OpenHarmony` ｜ `手机 / 平板 / 穿戴 / 智慧屏` ｜ [`v0.3.0 已发布 ⬇`](https://gitee.com/LeonTing1010/haplane/releases/v0.3.0) ｜ `无需破解 · 走你自己的账号签名`
 
 🌐 **官网**：https://leonting1010.github.io/haplane/
 
@@ -31,10 +31,12 @@ $ haplane deploy ./app.hap
 
 | 命令 | 做什么 | 要连设备？ |
 |---|---|---|
-| `haplane deploy app.hap` | 签名 → 装机 → 验签，一条龙 | 要（装机那步） |
-| `haplane sign app.hap` | 只签名，产出签好的 HAP | 上架 / CI 不用；debug 真机连一次取 UDID |
-| `haplane install app.hap` | 只推已签好的包（≈更聪明的 `hdc install`） | 要 |
-| `haplane verify app.hap` | 只验签名，判真假 | 不用 |
+| `haplane deploy --in app.hap` | 签名 → 装机 → 验签，一条龙（**带 `--in` 跳过打包**） | 要（装机那步） |
+| `haplane deploy` | 从源码工程走全链：`hvigorw` 打包 → 签名 → 装机 → 验签 | 要 |
+| `haplane sign --in app.hap` | 只签名，产出签好的 HAP | 上架 / CI 不用；debug 真机连一次取 UDID |
+| `haplane install --in app.hap` | 只推已签好的包（≈更聪明的 `hdc install`） | 要 |
+| `haplane verify --in app.hap` | 只验签名，判真假 | 不用 |
+| `haplane setup` / `doctor` / `device` | 生成配置 / 体检工具链 / 列设备取 UDID | `device` 要 |
 
 ## 签名墙不是难，是"烦"
 
@@ -91,15 +93,23 @@ HoKit、小白助手是把这些塞进界面里一个个点；**HapLane 是一�
 
 ## 上手
 
-> ⚠️ **老实说：HapLane 还在内测，二进制尚未发布。** 下面是发布后的用法。想提前试用，直接开 Issue 找我。
+**下载**（走 Gitee Release，国内直连，不走 npm）：[**v0.3.0 ⬇**](https://gitee.com/LeonTing1010/haplane/releases/v0.3.0)
 
-发布走 **Gitee Release**——国内直连、**不用装 Node**，下载对应平台的单文件就能跑（不走 npm，国内拉不动）：
+| 文件 | 适用 | 要求 |
+|---|---|---|
+| **`haplane.mjs`**（22 KB，推荐） | **Windows / Linux / macOS 通用** | Node ≥ 20（做鸿蒙开发一般都有，hvigor 就依赖它） |
+| `haplane-macos-arm64` | macOS Apple Silicon | 免装 Node，下载即用 |
 
 ```console
-# 从 Gitee Release 下载对应平台单文件，放进 PATH，然后
-$ haplane doctor          # 检查环境
-$ haplane deploy app.hap  # 连设备，一条命令
+$ node haplane.mjs setup                   # 首次：探测 SDK + 生成配置与 .env 模板
+#   把签名密码写进 .env（HAP_KEY_PWD / HAP_KEYSTORE_PWD，密码只从环境变量读）
+$ node haplane.mjs doctor                  # 体检：工具链与签名材料是否就位
+$ node haplane.mjs deploy --in ./app.hap   # 对现成 HAP：签名 → 装机 → 验签
 ```
+
+加 `--dry-run` 只打印将执行的命令、不真跑——没真机也能先看全链。
+
+> ⚠️ **老实说**：本版帮助文本里仍自称 `hap-deploy`（内部名），命令行为与上面一致，下版统一为 `haplane`。Windows / Linux 的免 Node 原生二进制待 CI 补。
 
 **签名踩坑、穿戴推送、AGC 配额这些，现在就能问**，不用等发布——开 [Issue](https://gitee.com/LeonTing1010/haplane/issues) 一起解，或先翻[《签名墙通关手册》](docs/签名墙通关手册.md)。要帮你把 app 签好、上架、代交付，也可以直接找我。
 

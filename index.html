@@ -298,7 +298,7 @@
       </div>
 
       <div class="proof" aria-label="可信度">
-        <span><b>✓</b> 内测中 · 计划 MIT 开源</span><i class="d"></i>
+        <span><b>✓</b> v0.3.0 已发布 · Gitee 直连下载</span><i class="d"></i>
         <span><b>✓</b> 模拟器五步全绿实测</span><i class="d"></i>
         <span><b>✓</b> 纯 Node · macOS / Windows / Linux</span><i class="d"></i>
         <span><b>✓</b> 接任意 MCP agent</span>
@@ -317,10 +317,12 @@
             <tr><th>命令</th><th>做什么</th><th>要连设备？</th></tr>
           </thead>
           <tbody>
-            <tr><th><code>haplane deploy app.hap</code></th><td>签名 → 装机 → 验签，一条龙</td><td>要（装机那步）</td></tr>
-            <tr><th><code>haplane sign app.hap</code></th><td>只签名，产出签好的 HAP</td><td>上架 / CI 不用；debug 真机连一次取 UDID</td></tr>
-            <tr><th><code>haplane install app.hap</code></th><td>只推已签好的包（≈更聪明的 hdc install）</td><td>要</td></tr>
-            <tr><th><code>haplane verify app.hap</code></th><td>只验签名，判真假</td><td>不用</td></tr>
+            <tr><th><code>haplane deploy --in app.hap</code></th><td>签名 → 装机 → 验签，一条龙（带 <code>--in</code> 跳过打包）</td><td>要（装机那步）</td></tr>
+            <tr><th><code>haplane deploy</code></th><td>从源码工程全链：hvigorw 打包 → 签名 → 装机 → 验签</td><td>要</td></tr>
+            <tr><th><code>haplane sign --in app.hap</code></th><td>只签名，产出签好的 HAP</td><td>上架 / CI 不用；debug 真机连一次取 UDID</td></tr>
+            <tr><th><code>haplane install --in app.hap</code></th><td>只推已签好的包（≈更聪明的 hdc install）</td><td>要</td></tr>
+            <tr><th><code>haplane verify --in app.hap</code></th><td>只验签名，判真假</td><td>不用</td></tr>
+            <tr><th><code>haplane setup / doctor / device</code></th><td>生成配置 / 体检工具链 / 列设备取 UDID</td><td>device 要</td></tr>
           </tbody>
         </table>
       </div>
@@ -478,21 +480,21 @@
         <div>
           <div class="kicker">上手 & 求助</div>
           <h2>装上，跑第一条命令。卡住了就来问。</h2>
-          <p class="sub" style="margin-bottom:20px;"><b style="color:var(--warn)">⚠ 老实说：HapLane 还在内测，二进制尚未发布。</b>发布走 <b style="color:var(--fg)">Gitee Release</b>——国内直连、不用装 Node，下载单文件就能跑（不走 npm，国内拉不动）。<b style="color:var(--fg)">但签名踩坑、穿戴推送、AGC 配额现在就能问</b>，不用等发布。</p>
+          <p class="sub" style="margin-bottom:20px;"><b style="color:var(--fg)">v0.3.0 已发布</b>，走 Gitee Release 国内直连下载（不走 npm，国内拉不动）。<code style="font-family:var(--mono);color:var(--fg)">haplane.mjs</code> 22KB，Windows / Linux / macOS 通用（需 Node ≥ 20，做鸿蒙开发一般都有）；macOS 另有免 Node 原生版。<b style="color:var(--fg)">签名踩坑、穿戴推送、AGC 配额，开 Issue 一起解。</b></p>
           <div class="cta">
-            <a class="btn primary" href="https://gitee.com/LeonTing1010/haplane/issues">▸ 开 Issue 问我</a>
+            <a class="btn primary" href="https://gitee.com/LeonTing1010/haplane/releases/v0.3.0">▸ 下载 v0.3.0</a>
             <a class="btn ghost" href="https://gitee.com/LeonTing1010/haplane/blob/main/docs/%E7%AD%BE%E5%90%8D%E5%A2%99%E9%80%9A%E5%85%B3%E6%89%8B%E5%86%8C.md">签名墙通关手册</a>
-            <a class="btn ghost" href="https://gitee.com/LeonTing1010/haplane">Gitee 仓库</a>
+            <a class="btn ghost" href="https://gitee.com/LeonTing1010/haplane/issues">开 Issue 问我</a>
           </div>
         </div>
         <div style="font-family:var(--mono);font-size:13px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);">
           <div style="padding:11px 16px;border-bottom:1px solid var(--line);color:var(--muted);display:flex;justify-content:space-between;">
-            <span>发布后怎么用</span><span style="color:var(--warn)">内测中</span>
+            <span>三步跑通</span><span style="color:var(--signed)">v0.3.0</span>
           </div>
           <div style="padding:16px 18px;line-height:2.1;overflow-x:auto;">
-            <div style="white-space:pre;color:var(--muted)"># 从 Gitee Release 下载单文件，放进 PATH</div>
-            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> haplane doctor          <span style="color:var(--muted)"># 检查环境</span></div>
-            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> haplane deploy app.hap  <span style="color:var(--signed)"># 连设备，一条命令 ✓</span></div>
+            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> node haplane.mjs setup            <span style="color:var(--muted)"># 探测 SDK + 生成配置</span></div>
+            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> node haplane.mjs doctor           <span style="color:var(--muted)"># 体检工具链与材料</span></div>
+            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> node haplane.mjs deploy --in x.hap <span style="color:var(--signed)"># 签名→装机→验签 ✓</span></div>
           </div>
         </div>
       </div>
