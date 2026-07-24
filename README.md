@@ -2,7 +2,7 @@
 
 > **一条命令，穿过签名墙。** CLI + MCP，agent 可驱动，装完自动验签。
 >
-> `适配 HarmonyOS NEXT · OpenHarmony` ｜ `手机 / 平板 / 穿戴 / 智慧屏` ｜ `开源可查 · MIT` ｜ `无需破解 · 走你自己的账号签名`
+> `适配 HarmonyOS NEXT · OpenHarmony` ｜ `手机 / 平板 / 穿戴 / 智慧屏` ｜ `内测中 · 计划 MIT 开源` ｜ `无需破解 · 走你自己的账号签名`
 
 🌐 **官网**：https://leonting1010.github.io/haplane/
 
@@ -71,7 +71,7 @@ HoKit、小白助手是把这些塞进界面里一个个点；**HapLane 是一�
 | 穿戴大包推送 | ✓ | — | — | — |
 | HAP 深度解析 | 基础 | ✓ | 基础 | ✓ |
 | 投屏 / 消费级 GUI | — | — | ✓ | — |
-| 开源免费 | ✓ | — | 闭源免费 | ✓ |
+| 开源免费 | 内测中·计划开源 | — | 闭源免费 | ✓ |
 
 > 对比基于各工具公开能力与实测；空位表示未提供或非其定位，非贬义。HapViewer 看包强、HoKit 有投屏 GUI、DevEco Code 是华为的 IDE 助手，各有各的用处。
 
@@ -91,13 +91,17 @@ HoKit、小白助手是把这些塞进界面里一个个点；**HapLane 是一�
 
 ## 上手
 
+> ⚠️ **老实说：HapLane 还在内测，二进制尚未发布。** 下面是发布后的用法。想提前试用，直接开 Issue 找我。
+
+发布走 **Gitee Release**——国内直连、**不用装 Node**，下载对应平台的单文件就能跑（不走 npm，国内拉不动）：
+
 ```console
-$ npm i -g haplane        # 或 bun / 单文件二进制
+# 从 Gitee Release 下载对应平台单文件，放进 PATH，然后
 $ haplane doctor          # 检查环境
 $ haplane deploy app.hap  # 连设备，一条命令
 ```
 
-签名踩坑、穿戴推送、AGC 配额这些，欢迎开 [Issue](https://gitee.com/LeonTing1010/haplane/issues) 一起解。要帮你把 app 签好、上架、代交付，也可以直接找我。
+**签名踩坑、穿戴推送、AGC 配额这些，现在就能问**，不用等发布——开 [Issue](https://gitee.com/LeonTing1010/haplane/issues) 一起解，或先翻[《签名墙通关手册》](docs/签名墙通关手册.md)。要帮你把 app 签好、上架、代交付，也可以直接找我。
 
 ---
 

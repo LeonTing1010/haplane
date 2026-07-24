@@ -252,7 +252,7 @@
     <nav>
       <a href="#cmd">命令</a>
       <a href="#compare">对比</a>
-      <a href="#">开源</a>
+      <a href="https://gitee.com/LeonTing1010/haplane">仓库</a>
       <a href="#join">上手</a>
     </nav>
     <button class="themeBtn" id="themeBtn" type="button" aria-label="切换明暗主题">◐ 主题</button>
@@ -298,7 +298,7 @@
       </div>
 
       <div class="proof" aria-label="可信度">
-        <span><b>✓</b> 开源可查 · MIT</span><i class="d"></i>
+        <span><b>✓</b> 内测中 · 计划 MIT 开源</span><i class="d"></i>
         <span><b>✓</b> 模拟器五步全绿实测</span><i class="d"></i>
         <span><b>✓</b> 纯 Node · macOS / Windows / Linux</span><i class="d"></i>
         <span><b>✓</b> 接任意 MCP agent</span>
@@ -411,7 +411,7 @@
             <tr><th>穿戴大包推送</th><td class="us yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
             <tr><th>HAP 深度解析</th><td>基础</td><td class="yes">✓</td><td>基础</td><td class="yes">✓</td></tr>
             <tr><th>投屏 / 消费级 GUI</th><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td></tr>
-            <tr><th>开源免费</th><td class="us yes">✓</td><td class="no">—</td><td>闭源免费</td><td class="yes">✓</td></tr>
+            <tr><th>开源免费</th><td class="us">内测中·计划开源</td><td class="no">—</td><td>闭源免费</td><td class="yes">✓</td></tr>
           </tbody>
         </table>
       </div>
@@ -478,19 +478,19 @@
         <div>
           <div class="kicker">上手 & 求助</div>
           <h2>装上，跑第一条命令。卡住了就来问。</h2>
-          <p class="sub" style="margin-bottom:20px;">HapLane 开源免费，五分钟装好、一条命令跑通。签名踩坑、穿戴推送、AGC 配额这些，开发者交流群里一起解，问了大概率有人答。要帮你把 app 签好、上架、代交付，也可以直接找我。</p>
+          <p class="sub" style="margin-bottom:20px;"><b style="color:var(--warn)">⚠ 老实说：HapLane 还在内测，二进制尚未发布。</b>发布走 <b style="color:var(--fg)">Gitee Release</b>——国内直连、不用装 Node，下载单文件就能跑（不走 npm，国内拉不动）。<b style="color:var(--fg)">但签名踩坑、穿戴推送、AGC 配额现在就能问</b>，不用等发布。</p>
           <div class="cta">
-            <a class="btn primary" href="#">▸ 快速开始</a>
-            <a class="btn ghost" href="#">开发者交流群</a>
-            <a class="btn ghost" href="#">上架 / 代交付</a>
+            <a class="btn primary" href="https://gitee.com/LeonTing1010/haplane/issues">▸ 开 Issue 问我</a>
+            <a class="btn ghost" href="https://gitee.com/LeonTing1010/haplane/blob/main/docs/%E7%AD%BE%E5%90%8D%E5%A2%99%E9%80%9A%E5%85%B3%E6%89%8B%E5%86%8C.md">签名墙通关手册</a>
+            <a class="btn ghost" href="https://gitee.com/LeonTing1010/haplane">Gitee 仓库</a>
           </div>
         </div>
         <div style="font-family:var(--mono);font-size:13px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);">
           <div style="padding:11px 16px;border-bottom:1px solid var(--line);color:var(--muted);display:flex;justify-content:space-between;">
-            <span>快速开始</span><span>~30 秒</span>
+            <span>发布后怎么用</span><span style="color:var(--warn)">内测中</span>
           </div>
           <div style="padding:16px 18px;line-height:2.1;overflow-x:auto;">
-            <div style="white-space:pre;"><span style="color:var(--muted)">$</span> npm i -g haplane        <span style="color:var(--muted)"># 或 bun / 单文件二进制</span></div>
+            <div style="white-space:pre;color:var(--muted)"># 从 Gitee Release 下载单文件，放进 PATH</div>
             <div style="white-space:pre;"><span style="color:var(--muted)">$</span> haplane doctor          <span style="color:var(--muted)"># 检查环境</span></div>
             <div style="white-space:pre;"><span style="color:var(--muted)">$</span> haplane deploy app.hap  <span style="color:var(--signed)"># 连设备，一条命令 ✓</span></div>
           </div>
@@ -505,7 +505,7 @@
     <div class="foot-grid">
       <span class="brand"><span class="bracket">[</span>HapLane<span class="bracket">]</span> · 鸿蒙 HAP 签名部署工具</span>
       <span class="links">
-        <a href="#">Gitee</a><a href="#">GitHub</a><a href="#">文档</a><a href="#">公众号</a>
+        <a href="https://gitee.com/LeonTing1010/haplane">Gitee</a><a href="https://github.com/LeonTing1010/haplane">GitHub</a><a href="https://gitee.com/LeonTing1010/haplane/blob/main/docs/%E7%AD%BE%E5%90%8D%E5%A2%99%E9%80%9A%E5%85%B3%E6%89%8B%E5%86%8C.md">手册</a><a href="https://gitee.com/LeonTing1010/haplane/issues">Issues</a>
       </span>
     </div>
     <p class="friends">相关：<a href="#">HapViewer</a> · <a href="#">OpenStore</a> · <a href="#">鸿蒙应用市场数据看板</a></p>
