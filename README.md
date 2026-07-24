@@ -44,6 +44,8 @@ HapLane 是 **MCP 工具**——不用背命令，agent 自己选工具、撞错
 }
 ```
 
+**或**（已上 npm）：把 `command`/`args` 换成 `"npx"` + `["-y","-p","haplane","haplane-mcp"]`，免下载。国内 npm 走 [npmmirror](https://npmmirror.com) 时更快；网络拉不动就用上面的本地文件方式。
+
 **3. 在 AI 里直接说**：「帮我把 `./app.hap` 签名装到手机」——agent 自己调 `deploy_to_device`，撞 system 权限自动降级重装，装完验签。
 
 - **支持**：Claude Code / Cursor / Cline / DevEco Code / 任意 MCP 客户端
@@ -118,7 +120,7 @@ HoKit、小白助手是把这些塞进界面里一个个点；**HapLane 是一�
 
 ## 上手
 
-**下载**（走 Gitee Release，国内直连，不走 npm）：[**v0.3.0 ⬇**](https://gitee.com/LeonTing1010/haplane/releases/v0.3.0)
+**装**：`npm i -g haplane`（已上 npm，国内把 registry 设成 [npmmirror](https://npmmirror.com) 更快）；或从 [**Gitee Release v0.3.0 ⬇**](https://gitee.com/LeonTing1010/haplane/releases/v0.3.0) 直连下单文件（网络拉不动 npm 时用）。
 
 | 文件 | 适用 | 要求 |
 |---|---|---|
