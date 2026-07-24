@@ -242,6 +242,23 @@
   .hc li{color:var(--fg-2);font-size:14px;padding-left:18px;position:relative;line-height:1.5;}
   .hc li::before{content:"\203A";position:absolute;left:0;color:var(--muted);}
   @media(max-width:760px){.honest-grid{grid-template-columns:1fr;}}
+
+  /* MCP 接入 */
+  .mcp-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:start;}
+  .mcp-label{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.03em;margin:18px 0 8px;}
+  .mcp-grid>div>.mcp-label:first-child{margin-top:0;}
+  .codebox{font-family:var(--mono);font-size:13px;background:var(--panel-2);border:1px solid var(--line-2);
+    border-radius:10px;padding:14px 16px;overflow-x:auto;color:var(--fg-2);line-height:1.75;}
+  .codebox.json{white-space:pre;color:var(--fg);}
+  .codebox .k2{color:var(--harmony);} .codebox .s{color:var(--signed);}
+  .codebox a{color:var(--signed);font-weight:600;text-decoration:none;}
+  .codebox a:hover{text-decoration:underline;}
+  .codebox.nl{border-left:3px solid var(--signed);}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chips .c{font-family:var(--mono);font-size:11.5px;color:var(--fg-2);border:1px solid var(--line);
+    border-radius:20px;padding:4px 10px;background:var(--panel);}
+  .chips .c.tool{color:var(--signed);border-color:color-mix(in srgb,var(--signed) 35%,var(--line));}
+  @media(max-width:760px){.mcp-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -250,6 +267,7 @@
   <div class="wrap">
     <span class="brand"><span class="bracket">[</span>HapLane<span class="bracket">]</span></span>
     <nav>
+      <a href="#mcp">接入</a>
       <a href="#cmd">命令</a>
       <a href="#compare">对比</a>
       <a href="https://gitee.com/LeonTing1010/haplane">仓库</a>
@@ -262,7 +280,7 @@
 <main>
   <section class="hero" style="border-top:0;">
     <div class="wrap">
-      <div class="eyebrow"><span class="dot"></span>鸿蒙 HAP · 签名 · 调试 · 部署</div>
+      <div class="eyebrow"><span class="dot"></span>鸿蒙 HAP · MCP 工具 · agent 可驱动</div>
       <h1>一条命令，<span class="hl">穿过签名墙</span>。</h1>
       <p class="lede">纯血鸿蒙装个 HAP，能卡你一下午——华为账号、UDID、配额、证书链、system 权限报错，一步错就装不上。<b>HapLane 把这七步折成一条命令</b>，装完自动验签。想接 CI、让 AI agent 跑也行，先图一键就够。</p>
       <div class="cta">
@@ -306,11 +324,47 @@
     </div>
   </section>
 
+  <section id="mcp">
+    <div class="wrap">
+      <div class="kicker">接入 · MCP</div>
+      <h2>挂进你的 AI，用说的：「把这个 HAP 装到手机上」。</h2>
+      <p class="sub">HapLane 是 MCP 工具——不用背命令，agent 自己选工具、撞错自己修。粘一段配置就接上，支持任意 MCP 客户端。</p>
+      <div class="mcp-grid">
+        <div>
+          <div class="mcp-label">1 · 下载 MCP（Gitee 直连，不走 npm）</div>
+          <div class="codebox"><a href="https://gitee.com/LeonTing1010/haplane/releases/download/v0.3.0/haplane-mcp.mjs">haplane-mcp.mjs ⬇</a>　放到本地任意路径</div>
+          <div class="mcp-label">2 · 粘进你的 MCP 配置</div>
+          <div class="codebox json">{
+  <span class="k2">"mcpServers"</span>: {
+    <span class="k2">"haplane"</span>: {
+      <span class="k2">"command"</span>: <span class="s">"node"</span>,
+      <span class="k2">"args"</span>: [<span class="s">"/你的路径/haplane-mcp.mjs"</span>]
+    }
+  }
+}</div>
+          <div class="mcp-label">3 · 在 AI 里直接说</div>
+          <div class="codebox nl">「帮我把 ./app.hap 签名装到手机」——agent 自己调 <b style="color:var(--fg)">deploy_to_device</b>，撞 system 权限自动降级重装，装完验签。</div>
+        </div>
+        <div>
+          <div class="mcp-label">支持的客户端</div>
+          <div class="chips">
+            <span class="c">Claude Code</span><span class="c">Cursor</span><span class="c">Cline</span><span class="c">DevEco Code</span><span class="c">任意 MCP 客户端</span>
+          </div>
+          <div class="mcp-label">11 个工具，agent 自己选</div>
+          <div class="chips">
+            <span class="c tool">deploy_to_device</span><span class="c tool">sign</span><span class="c tool">verify</span><span class="c tool">install</span><span class="c tool">doctor</span><span class="c tool">gen_signing_material</span><span class="c tool">agc_provision</span><span class="c tool">agc_status</span><span class="c tool">rename_bundle</span><span class="c tool">hdc_devices</span><span class="c tool">hdc_udid</span>
+          </div>
+        </div>
+      </div>
+      <p class="sub" style="margin:26px 0 0;font-size:14px;">需 Node ≥ 20（做鸿蒙开发一般都有，hvigor 就依赖它）。更想命令行直接用？往下看。</p>
+    </div>
+  </section>
+
   <section id="cmd">
     <div class="wrap">
-      <div class="kicker">命令</div>
+      <div class="kicker">也能命令行直接用</div>
       <h2>一条 deploy 搞定，也能拆成四步。</h2>
-      <p class="sub">deploy 一条龙：签名 + 装机 + 验签。只想签名、或只想推包？拆开单独调那一步就行。</p>
+      <p class="sub">不挂 MCP、想手动跑也行。deploy 一条龙：签名 + 装机 + 验签。只想签名、或只想推包？拆开单独调那一步就行。</p>
       <div class="tablewrap">
         <table class="cmd-t">
           <thead>
@@ -406,8 +460,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr><th>无头 CLI（无 GUI）</th><td class="us yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
             <tr><th>接任意 MCP agent</th><td class="us yes">✓</td><td>仅自家</td><td class="no">—</td><td class="no">—</td></tr>
+            <tr><th>无头 CLI（无 GUI）</th><td class="us yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
             <tr><th>CI 流水线集成</th><td class="us yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
             <tr><th>system 权限自动降级</th><td class="us yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
             <tr><th>穿戴大包推送</th><td class="us yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>

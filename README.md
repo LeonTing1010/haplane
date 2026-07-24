@@ -25,7 +25,32 @@ $ haplane deploy ./app.hap
 
 想接 CI、让 AI agent 跑也行，先图一键就够。
 
-## 命令
+## 接入 MCP：挂进你的 AI，用说的
+
+HapLane 是 **MCP 工具**——不用背命令，agent 自己选工具、撞错自己修。三步接上：
+
+**1. 下载 MCP（Gitee 直连，不走 npm）**：[`haplane-mcp.mjs` ⬇](https://gitee.com/LeonTing1010/haplane/releases/download/v0.3.0/haplane-mcp.mjs)（36 KB，放到本地任意路径）
+
+**2. 粘进你的 MCP 配置**：
+
+```json
+{
+  "mcpServers": {
+    "haplane": {
+      "command": "node",
+      "args": ["/你的路径/haplane-mcp.mjs"]
+    }
+  }
+}
+```
+
+**3. 在 AI 里直接说**：「帮我把 `./app.hap` 签名装到手机」——agent 自己调 `deploy_to_device`，撞 system 权限自动降级重装，装完验签。
+
+- **支持**：Claude Code / Cursor / Cline / DevEco Code / 任意 MCP 客户端
+- **11 个工具**（agent 自己选）：`deploy_to_device` `sign` `verify` `install` `doctor` `gen_signing_material` `agc_provision` `agc_status` `rename_bundle` `hdc_devices` `hdc_udid`
+- 需 Node ≥ 20（做鸿蒙开发一般都有，hvigor 就依赖它）
+
+## 也能命令行直接用
 
 一条 `deploy` 搞定，也能拆成四步——只想签名、或只想推包，单独调那一步就行。
 
