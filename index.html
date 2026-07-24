@@ -196,6 +196,15 @@
   .join h2{margin-bottom:12px;}
   @media(max-width:760px){.join{grid-template-columns:1fr;}}
 
+  .qq-strip{margin-top:22px;background:var(--panel);border:1px solid var(--line-2);border-radius:16px;
+    padding:24px 30px;display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center;box-shadow:var(--shadow);}
+  .qq-strip img{width:186px;height:auto;border-radius:12px;display:block;border:1px solid var(--line);}
+  .qq-strip h3{margin:0 0 9px;font-size:19px;font-weight:700;letter-spacing:-.01em;}
+  .qq-strip p{margin:0;color:var(--fg-2);font-size:14px;max-width:54ch;}
+  .qq-strip .gnum{margin-top:13px;font-family:var(--mono);font-size:12.5px;color:var(--muted);}
+  .qq-strip .gnum b{color:var(--fg-2);}
+  @media(max-width:760px){.qq-strip{grid-template-columns:1fr;justify-items:center;text-align:center;}}
+
   /* ---- footer ---- */
   footer{border-top:1px solid var(--line);padding:44px 0 60px;color:var(--muted);font-size:13px;}
   .foot-grid{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;}
@@ -554,6 +563,19 @@
           </div>
         </div>
       </div>
+
+      <div class="qq-strip">
+        <img src="qq-group.png" alt="HapLane 鸿蒙 HAP 交流群 QQ 二维码，群号 897559316" loading="lazy" width="186">
+        <div>
+          <div class="kicker">交流群</div>
+          <h3>签名 / 部署 / RN 移植，进群一起解</h3>
+          <p>鸿蒙 HAP 开发者互助群。签名卡配额、部署跑不通、RN 应用上鸿蒙——贴报错、贴命令，一起搭手。不做资源分发，只解决真问题。</p>
+          <div class="cta" style="margin-top:16px;">
+            <a class="btn primary" href="https://qm.qq.com/q/5UfzodjCsU">▸ 加入 QQ 交流群</a>
+          </div>
+          <p class="gnum">扫码或点按钮加入 · QQ 群号 <b>897559316</b> · 审核制</p>
+        </div>
+      </div>
     </div>
   </section>
 </main>
@@ -563,7 +585,7 @@
     <div class="foot-grid">
       <span class="brand"><span class="bracket">[</span>HapLane<span class="bracket">]</span> · 鸿蒙 HAP 签名部署工具</span>
       <span class="links">
-        <a href="https://gitee.com/LeonTing1010/haplane">Gitee</a><a href="https://github.com/LeonTing1010/haplane">GitHub</a><a href="https://gitee.com/LeonTing1010/haplane/blob/main/docs/%E7%AD%BE%E5%90%8D%E5%A2%99%E9%80%9A%E5%85%B3%E6%89%8B%E5%86%8C.md">手册</a><a href="https://gitee.com/LeonTing1010/haplane/issues">Issues</a>
+        <a href="https://gitee.com/LeonTing1010/haplane">Gitee</a><a href="https://github.com/LeonTing1010/haplane">GitHub</a><a href="https://gitee.com/LeonTing1010/haplane/blob/main/docs/%E7%AD%BE%E5%90%8D%E5%A2%99%E9%80%9A%E5%85%B3%E6%89%8B%E5%86%8C.md">手册</a><a href="https://gitee.com/LeonTing1010/haplane/issues">Issues</a><a href="https://qm.qq.com/q/5UfzodjCsU">QQ群</a>
       </span>
     </div>
     <p class="friends">相关：<a href="#">HapViewer</a> · <a href="#">OpenStore</a> · <a href="#">鸿蒙应用市场数据看板</a></p>

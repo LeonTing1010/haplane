@@ -5,6 +5,7 @@
 > `适配 HarmonyOS NEXT · OpenHarmony` ｜ `手机 / 平板 / 穿戴 / 智慧屏` ｜ [`v0.3.0 已发布 ⬇`](https://gitee.com/LeonTing1010/haplane/releases/v0.3.0) ｜ `无需破解 · 走你自己的账号签名`
 
 🌐 **官网**：https://leonting1010.github.io/haplane/
+💬 **交流群**：鸿蒙 HAP 签名 / 部署 / RN 移植互助 QQ 群 [`897559316`](https://qm.qq.com/q/5UfzodjCsU)（审核制）——签名卡配额、部署跑不通、RN 上鸿蒙，贴报错一起解
 
 ---
 
