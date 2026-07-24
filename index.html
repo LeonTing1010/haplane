@@ -268,6 +268,14 @@
     border-radius:20px;padding:4px 10px;background:var(--panel);}
   .chips .c.tool{color:var(--signed);border-color:color-mix(in srgb,var(--signed) 35%,var(--line));}
   @media(max-width:760px){.mcp-grid{grid-template-columns:1fr;}}
+  .app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px;}
+  .app-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;}
+  .app-card .cat{display:inline-block;align-self:flex-start;font-size:11px;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));border-radius:6px;padding:1px 7px;margin-bottom:7px;}
+  .app-card h3{margin:0 0 4px;font-size:15px;color:var(--fg);}
+  .app-card .dev{font-size:11px;color:var(--muted);margin:0 0 6px;}
+  .app-card p.d{margin:0 0 10px;font-size:12px;color:var(--muted);line-height:1.55;flex:1;}
+  .app-card code{display:block;background:var(--ink);padding:6px 8px;border-radius:6px;font-size:11px;color:var(--signed);overflow-x:auto;white-space:nowrap;}
+  .app-count{color:var(--signed);font-weight:700;}
 </style>
 </head>
 <body>
@@ -278,6 +286,7 @@
     <nav>
       <a href="#mcp">接入</a>
       <a href="#cmd">命令</a>
+      <a href="#apps">应用</a>
       <a href="#compare">对比</a>
       <a href="https://gitee.com/LeonTing1010/haplane">仓库</a>
       <a href="#join">上手</a>
@@ -450,6 +459,16 @@
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section id="apps">
+    <div class="wrap">
+      <div class="kicker">应用市场</div>
+      <h2>开源应用,一条命令装上。</h2>
+      <p class="sub">全部开源、license 白名单、可复现构建或作者自投——不收破解魔改。对 agent 说一句话,或直接 <code>npx -y haplane deploy --app &lt;id&gt;</code>。</p>
+      <div id="app-grid" class="app-grid"><p class="sub">加载应用列表…</p></div>
+      <p class="sub" style="margin-top:18px">完整列表 / 投稿你的开源应用 → <a href="https://github.com/LeonTing1010/haplane-registry" style="color:var(--signed)">haplane-registry</a></p>
     </div>
   </section>
 
@@ -632,6 +651,28 @@
     setTimeout(step, delay);
   }
   step();
+})();
+</script>
+<script>
+// 应用市场:动态拉 registry index.json(GitHub raw 主、Gitee raw 兜底),始终最新
+(function(){
+  var SRC=['https://raw.githubusercontent.com/LeonTing1010/haplane-registry/main/index.json',
+           'https://gitee.com/LeonTing1010/haplane-registry/raw/main/index.json'];
+  var esc=function(s){return String(s||'').replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+  function render(d){
+    var g=document.getElementById('app-grid'); if(!g)return;
+    var apps=(d.apps||[]);
+    var h2=document.querySelector('#apps h2');
+    if(h2)h2.innerHTML='<span class="app-count">'+apps.length+'</span> 个开源应用,一条命令装上。';
+    g.innerHTML=apps.map(function(a){
+      return '<div class="app-card"><span class="cat">'+esc(a.category||'应用')+'</span><h3>'+esc(a.name)+'</h3><p class="dev">'+esc(a.developer||'')+' · '+esc(a.license||'')+'</p><p class="d">'+esc(a.description||'')+'</p><code>haplane deploy --app '+esc(a.id)+'</code></div>';
+    }).join('');
+  }
+  function tryLoad(i){
+    if(i>=SRC.length){document.getElementById('app-grid').innerHTML='<p class="sub">列表暂时加载不出,直接看 <a href="https://github.com/LeonTing1010/haplane-registry" style="color:var(--signed)">registry</a></p>';return;}
+    fetch(SRC[i]).then(function(r){if(!r.ok)throw 0;return r.json();}).then(render).catch(function(){tryLoad(i+1);});
+  }
+  tryLoad(0);
 })();
 </script>
 </body>
