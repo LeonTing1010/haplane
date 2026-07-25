@@ -2,7 +2,7 @@
 
 > **一条命令，穿过签名墙。** CLI + MCP，agent 可驱动，装完自动验签。
 >
-> `适配 HarmonyOS NEXT · OpenHarmony` ｜ `手机 / 平板 / 穿戴 / 智慧屏` ｜ [`v0.3.0 已发布 ⬇`](https://gitee.com/LeonTing1010/haplane/releases/v0.3.0) ｜ `无需破解 · 走你自己的账号签名`
+> `适配 HarmonyOS NEXT · OpenHarmony` ｜ `手机 / 平板 / 穿戴 / 智慧屏` ｜ [`npm haplane 已发布 ⬇`](https://www.npmjs.com/package/haplane) ｜ `无需破解 · 走你自己的账号签名`
 
 🌐 **官网**：https://leonting1010.github.io/haplane/
 💬 **交流群**：鸿蒙 HAP 签名 / 部署 / RN 移植互助 QQ 群 [`897559316`](https://qm.qq.com/q/5UfzodjCsU)（审核制）——签名卡配额、部署跑不通、RN 上鸿蒙，贴报错一起解
@@ -50,7 +50,7 @@ HapLane 是 **MCP 工具**——不用背命令，agent 自己选工具、撞错
 **3. 在 AI 里直接说**：「帮我把 `./app.hap` 签名装到手机」——agent 自己调 `deploy_to_device`，撞 system 权限自动降级重装，装完验签。
 
 - **支持**：Claude Code / Cursor / Cline / DevEco Code / 任意 MCP 客户端
-- **11 个工具**（agent 自己选）：`deploy_to_device` `sign` `verify` `install` `doctor` `gen_signing_material` `agc_provision` `agc_status` `rename_bundle` `hdc_devices` `hdc_udid`
+- **13 个工具**（agent 自己选）：`deploy_to_device` `search_hap` `list_sources` `sign` `verify` `install` `doctor` `gen_signing_material` `agc_provision` `agc_status` `rename_bundle` `hdc_devices` `hdc_udid`——`search_hap` 在你订阅的开源源里搜、`deploy_to_device{app:id}` 从上游官方位拉取装机(中性工具,不托管;`list_sources` 看订阅源)
 - 需 Node ≥ 20（做鸿蒙开发一般都有，hvigor 就依赖它）
 
 ## 也能命令行直接用

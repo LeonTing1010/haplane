@@ -464,9 +464,9 @@
 
   <section id="apps">
     <div class="wrap">
-      <div class="kicker">应用市场</div>
-      <h2>开源应用,一条命令装上。</h2>
-      <p class="sub">全部开源、license 白名单、可复现构建或作者自投——不收破解魔改。对 agent 说一句话,或直接 <code>npx -y haplane deploy --app &lt;id&gt;</code>。</p>
+      <div class="kicker">官方开源源</div>
+      <h2>订阅官方源,一条命令装上。</h2>
+      <p class="sub">HapLane 是中性工具,自身不放任何包;内容来自你订阅的源(默认订阅这个官方开源源,可退订)。条目只索引<b>上游权利人官方发布位</b>——不托管、不转存,装机时从上游拉取 + sha256 校验。全部开源、license 白名单、不收破解魔改。对 agent 说一句话,或 <code>npx -y haplane deploy --app &lt;id&gt;</code>;也可 <code>haplane source add</code> 加你自己的源。</p>
       <div id="app-grid" class="app-grid"><p class="sub">加载应用列表…</p></div>
       <p class="sub" style="margin-top:18px">完整列表 → <a href="https://github.com/LeonTing1010/haplane-registry" style="color:var(--signed)">haplane-registry</a>　·　投稿你的开源应用 → <a href="https://github.com/LeonTing1010/haplane-registry/issues/new/choose" style="color:var(--signed)">填「投稿」表单</a>（机器人自动机检 + 开 PR，合并即上站）</p>
     </div>
@@ -663,9 +663,13 @@
     var g=document.getElementById('app-grid'); if(!g)return;
     var apps=(d.apps||[]);
     var h2=document.querySelector('#apps h2');
-    if(h2)h2.innerHTML='<span class="app-count">'+apps.length+'</span> 个开源应用,一条命令装上。';
+    if(h2)h2.innerHTML='<span class="app-count">'+apps.length+'</span> 个开源应用,订阅官方源即可装。';
     g.innerHTML=apps.map(function(a){
-      return '<div class="app-card"><span class="cat">'+esc(a.category||'应用')+'</span><h3>'+esc(a.name)+'</h3><p class="dev">'+esc(a.developer||'')+' · '+esc(a.license||'')+'</p><p class="d">'+esc(a.description||'')+'</p><code>haplane deploy --app '+esc(a.id)+'</code></div>';
+      // discoveryOnly 条目仅索引(上游无直链),给上游自取链接而非装机命令——装机命令对它们会被拒
+      var act=a.discoveryOnly
+        ? '<a href="'+esc(a.upstreamRelease||a.source||'')+'" target="_blank" rel="noopener" style="color:var(--signed);font-size:.82rem;text-decoration:none">仅索引 · 去上游自取 ↗</a>'
+        : '<code>haplane deploy --app '+esc(a.id)+'</code>';
+      return '<div class="app-card"><span class="cat">'+esc(a.category||'应用')+'</span><h3>'+esc(a.name)+'</h3><p class="dev">'+esc(a.developer||'')+' · '+esc(a.license||'')+'</p><p class="d">'+esc(a.description||'')+'</p>'+act+'</div>';
     }).join('');
   }
   function tryLoad(i){
