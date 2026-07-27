@@ -300,8 +300,8 @@
   <section class="hero" style="border-top:0;">
     <div class="wrap">
       <div class="eyebrow"><span class="dot"></span>鸿蒙 HAP · MCP 工具 · agent 可驱动</div>
-      <h1>一条命令，<span class="hl">穿过签名墙</span>。</h1>
-      <p class="lede">纯血鸿蒙装个 HAP，能卡你一下午——华为账号、UDID、配额、证书链、system 权限报错，一步错就装不上。<b>HapLane 把这七步折成一条命令</b>，装完自动验签。想接 CI、让 AI agent 跑也行，先图一键就够。</p>
+      <h1>你构建的 HAP，<span class="hl">一键签名装真机</span>。</h1>
+      <p class="lede">纯血鸿蒙把 HAP 装到真机、送上架，能卡你一下午——华为账号、UDID、配额、证书链、system 权限报错，一步错就装不上。面向鸿蒙应用开发者，<b>HapLane 把这七步折成一条命令</b>：真机调试一键签装，也走华为<b>邀测 / AppGallery 上架</b>这条干净发布轨。想接 CI、让 AI agent 跑也行。</p>
       <div class="cta">
         <a class="btn primary" href="#join">▸ 开始使用</a>
         <a class="btn ghost" href="https://qm.qq.com/q/WLH4qmk2sM">▸ 进 QQ 群</a>
@@ -410,7 +410,7 @@
       <p class="sub">HoKit、小白助手是把这些步骤塞进界面里一个个点；HapLane 是一条命令跑完，还能写进脚本、让 AI 帮你跑。</p>
       <div class="ba">
         <div class="card before">
-          <h3>⚠ 手动侧载一个 HAP</h3>
+          <h3>⚠ 手动部署一个 HAP 到真机</h3>
           <ol class="steps">
             <li><span class="n">01</span>开发者模式 + USB/无线调试 + 手机弹窗授权</li>
             <li><span class="n">02</span>hdc 连真机，取 UDID</li>
@@ -425,7 +425,7 @@
         <div class="card after">
           <h3>✓ HapLane</h3>
           <div class="one">$ haplane deploy ./app.hap<br><span class="ok">✓ 已装上设备 · 6.2s</span></div>
-          <p>连设备 + 一条命令。UDID、包名、证书材料、system 权限降级——全自动，不用你填。证书到期自动重签。这套骨架已在模拟器五步全绿实测（hdc→sign→install→verify）。</p>
+          <p>连设备 + 一条命令。UDID、包名、证书材料、system 权限降级——全自动，不用你填。证书到期自动重签。这套骨架已在模拟器五步全绿实测（hdc→sign→install→verify），也支持接 AGC 走邀测 / 上架。</p>
         </div>
       </div>
     </div>
@@ -630,7 +630,7 @@
     {t:'<span class="p">›</span> <span class="k">签名</span>              <span class="v">sign-app</span>  <span class="ok">✓</span>'},
     {t:'<span class="p">›</span> <span class="k">安装</span>              <span class="warn">system 权限报错</span> <span class="warn">⚠</span>  <span class="ok">自动降级 → 重装 ✓</span>'},
     {t:'<span class="p">›</span> <span class="k">验签</span>              <span class="v">valid:</span> <span class="ok">true ✓</span>'},
-    {d:'✓ 已装上设备 · 用时 6.2s     一条命令，穿过签名墙。'}
+    {d:'✓ 已装上设备 · 用时 6.2s     一条命令，签好装上。'}
   ];
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   function el(cls){var d=document.createElement('span');d.className='ln'+(cls?' '+cls:'');return d;}
